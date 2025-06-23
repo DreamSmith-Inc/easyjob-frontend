@@ -12,9 +12,16 @@ const axiosInstance = axios.create({
 
 let accessToken: string | null = null;
 let isRefreshing = false;
-let failedQueue: any[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+interface FailedRequest {
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+}
+
+let failedQueue: FailedRequest[] = [];
+
+// @ts-ignore
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) prom.reject(error);
     else prom.resolve(token);

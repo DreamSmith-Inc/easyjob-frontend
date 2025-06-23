@@ -10,9 +10,9 @@ import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { RoutesEnum } from "@/lib/routes";
 import AuthRedirectText from "@/components/forms/AuthRedirectText";
+import { AxiosError } from "axios";
 
 type LoginFormInputs = {
   email: string;
@@ -37,9 +37,9 @@ export default function StudentLogin() {
 
       router.push("/dashboard");
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       const message =
-        error?.response?.data?.detail ||
+        (error.response?.data as { detail?: string })?.detail ||
         "Something went wrong. Please try again.";
 
       toast.error("Login Failed", {

@@ -10,6 +10,8 @@ import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import AuthRedirectText from "@/components/forms/AuthRedirectText";
 import { RoutesEnum } from "@/lib/routes";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 type SignupFormInputs = {
   firstname: string;
@@ -20,11 +22,7 @@ type SignupFormInputs = {
   username: string;
 };
 
-export default function StudentSignup({
-  setTab,
-}: {
-  setTab: React.Dispatch<React.SetStateAction<string>>;
-}) {
+export default function StudentSignup() {
   const {
     register,
     handleSubmit,
@@ -32,27 +30,17 @@ export default function StudentSignup({
     formState: { errors },
   } = useForm<SignupFormInputs>();
 
-  const onSubmit = async (data: SignupFormInputs) => {
-    try {
-      const response = await axiosInstance.post("/auth/register/student", {
-        firstname: data.firstname,
-        lastname: data.lastname,
-        email: data.email,
-        password: data.password,
-        password2: data.password2,
-        user_name: data.username,
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: SignupFormInputs) =>
+      axiosInstance.post("/auth/register/student", data),
+    onSuccess: () => {
+      toast.success("Registration Successful", {
+        description: "Welcome! Please login...",
       });
-
-      if (response.status == 201) {
-        toast.success("Registration Successful", {
-          description: "Welcome! Please login...",
-        });
-
-        setTab("login");
-      }
-    } catch (error: any) {
+    },
+    onError: (error: AxiosError) => {
       const message =
-        error?.response?.data?.detail ||
+        (error.response?.data as { detail?: string })?.detail ||
         "Something went wrong. Please try again.";
 
       toast.error("Registration Failed", {
@@ -60,7 +48,21 @@ export default function StudentSignup({
       });
 
       console.error("Registraion error:", error);
-    }
+    },
+  });
+
+  const onSubmit = async (data: SignupFormInputs) => {
+    const body: SignupFormInputs = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      password: data.password,
+      password2: data.password2,
+      // @ts-expect-error
+      user_name: data.username,
+    };
+
+    mutate(body);
   };
 
   const password = watch("password");
@@ -168,6 +170,7 @@ export default function StudentSignup({
         </LabelInputContainer>
 
         <Button
+          isLoading={isPending}
           className="cursor-pointer group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
           type="submit"
         >

@@ -6,6 +6,7 @@ import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 export const ProfileDropdown = () => {
   const router = useRouter();
@@ -38,9 +39,9 @@ export const ProfileDropdown = () => {
 
       router.push("/login/student");
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       const message =
-        error?.response?.data?.detail ||
+        (error.response?.data as { detail?: string })?.detail ||
         "Something went wrong. Please try again.";
 
       toast.error("Login Failed", {

@@ -12,7 +12,8 @@ export default async function page() {
               Dashboard Overview
             </h2>
             <p className="text-gray-600">
-              Welcome back! Here's what's happening with your account today.
+              Welcome back! Here&apos;s what&apos;s happening with your account
+              today.
             </p>
           </div>
         </div>
