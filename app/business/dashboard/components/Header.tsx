@@ -6,12 +6,13 @@ export const Header = () => {
   const { currentUser } = useAuth();
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm">
+    <header className="bg-white sticky top-0 border-b border-gray-200">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-semibold text-gray-900">
-              Hi, {currentUser?.user_name}
+              Hi,{" "}
+              {`${currentUser?.firstname}` + " " + `${currentUser?.lastname}`}
             </h1>
           </div>
 

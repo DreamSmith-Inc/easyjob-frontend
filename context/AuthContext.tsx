@@ -1,8 +1,7 @@
 "use client";
 
 import { UserType } from "@/app/types";
-import axiosInstance, { setAxiosAuthToken } from "@/lib/axios";
-import { setAccessTokenSetter } from "@/lib/tokenManager";
+import axiosInstance from "@/lib/axios";
 import {
   createContext,
   useContext,
@@ -14,8 +13,6 @@ import {
 } from "react";
 
 type AuthContextType = {
-  accessToken: string | null;
-  setAccessToken: (token: string | null) => void;
   currentUser: UserType | undefined;
   setCurrentUser: Dispatch<SetStateAction<UserType | undefined>>;
 };
@@ -23,31 +20,21 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [accessToken, _setAccessToken] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<UserType>();
 
   async function fetch() {
-    const response = await axiosInstance<UserType>("/auth/me");
+    const response = await axiosInstance<UserType>("/auth/me", {
+      withCredentials: true,
+    });
     setCurrentUser(response.data);
   }
 
   useEffect(() => {
     fetch();
-  }, [accessToken]);
-
-  const setAccessToken = (token: string | null) => {
-    _setAccessToken(token);
-    setAxiosAuthToken(token);
-  };
-
-  useEffect(() => {
-    setAccessTokenSetter(setAccessToken); // Register the setter
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ accessToken, setAccessToken, currentUser, setCurrentUser }}
-    >
+    <AuthContext.Provider value={{ currentUser, setCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );

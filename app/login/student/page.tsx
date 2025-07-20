@@ -35,7 +35,7 @@ export default function StudentLogin() {
         description: "Redirecting to dashboard...",
       });
 
-      router.push("/dashboard");
+      router.push(`/${RoutesEnum.STUDENT}/dashboard`);
     },
     onError: (error: AxiosError) => {
       const message =
