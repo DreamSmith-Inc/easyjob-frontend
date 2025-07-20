@@ -22,7 +22,7 @@ type SignupFormInputs = {
   username: string;
 };
 
-export default function StudentSignup() {
+export default function BusinessSignup() {
   const {
     register,
     handleSubmit,
@@ -32,7 +32,7 @@ export default function StudentSignup() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: SignupFormInputs) =>
-      axiosInstance.post("/auth/register/student", data),
+      axiosInstance.post("/auth/register/business", data),
     onSuccess: () => {
       toast.success("Registration Successful", {
         description: "Welcome! Please login...",
@@ -181,7 +181,7 @@ export default function StudentSignup() {
 
         <AuthRedirectText
           label="Not have an account? Login"
-          href={`/login/${RoutesEnum.STUDENT}`}
+          href={`/login/${RoutesEnum.BUSINESS}`}
         />
 
         <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />

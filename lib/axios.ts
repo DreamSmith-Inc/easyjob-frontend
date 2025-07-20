@@ -1,6 +1,5 @@
 // lib/axios.ts
 import axios from "axios";
-import { setAccessToken } from "./tokenManager";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -8,9 +7,9 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-let accessToken: string | null = null;
 let isRefreshing = false;
 
 interface FailedRequest {
@@ -29,21 +28,6 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
-export const setAxiosAuthToken = (token: string | null) => {
-  accessToken = token;
-};
-
-// Attach access token to each request
-axiosInstance.interceptors.request.use(
-  (config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 // Handle 401 errors
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -61,8 +45,7 @@ axiosInstance.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
+          .then(() => {
             return axiosInstance(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -71,24 +54,17 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axiosInstance.post(
+        await axiosInstance.post(
           "/auth/token/refresh/",
           {},
           { withCredentials: true }
         );
-        const newToken = response.data.access_token;
-
-        // Update access token in memory and context
-        setAxiosAuthToken(newToken);
-        setAccessToken(newToken); // Update global state (see below)
-
-        processQueue(null, newToken);
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        processQueue(null, null);
         return axiosInstance(originalRequest);
       } catch (err) {
-        // if (typeof window !== "undefined") {
-        //   window.location.href = "/register/student";
-        // }
+        if (typeof window !== "undefined") {
+          window.location.href = "/login/student";
+        }
 
         processQueue(err, null);
         return Promise.reject(err);

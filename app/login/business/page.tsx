@@ -19,7 +19,7 @@ type LoginFormInputs = {
   password: string;
 };
 
-export default function StudentLogin() {
+export default function BusinessLogin() {
   const router = useRouter();
   const {
     register,
@@ -35,7 +35,7 @@ export default function StudentLogin() {
         description: "Redirecting to dashboard...",
       });
 
-      router.push("/dashboard");
+      router.push(`/${RoutesEnum.BUSINESS}/dashboard`);
     },
     onError: (error: AxiosError) => {
       const message =
