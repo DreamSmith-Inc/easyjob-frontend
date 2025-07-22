@@ -6,7 +6,7 @@ export const Header = () => {
   const { currentUser } = useAuth();
 
   return (
-    <header className="bg-white sticky top-0 border-b border-gray-200">
+    <header className="bg-white sticky top-0 border-b border-gray-200 z-10">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

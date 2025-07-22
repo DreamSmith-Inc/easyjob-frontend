@@ -1,7 +1,6 @@
 import StatusCards from "./components/StatusCards";
-import JobsSection from "./components/JobsSection";
-import Filters from "./components/Filters";
-import JobsTitle from "./components/JobsTitle";
+import JobsTitle from "./components/jobs/JobsTitle";
+import JobsPage from "./components/jobs/JobsPage";
 
 export default async function page() {
   return (
@@ -10,8 +9,7 @@ export default async function page() {
       <div className="space-y-4">
         <JobsTitle />
 
-        <Filters />
-        <JobsSection />
+        <JobsPage />
       </div>
     </div>
   );
