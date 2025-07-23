@@ -143,7 +143,7 @@ export default async function page({
             <CardFooter className="flex justify-between pt-6">
               <div className="text-sm text-muted-foreground">
                 <span className="font-medium">Application Deadline:</span>{" "}
-                {format(job.timing, "dd MM yyyy")}
+                {job.timing}
               </div>
               <div className="flex gap-3">
                 <Button variant="outline">Save for Later</Button>
