@@ -36,6 +36,8 @@ export function JobCard({ job }: JobCardProps) {
                 <Image
                   src={job.logo || "/placeholder.svg"}
                   alt={job.company}
+                  width={100}
+                  height={100}
                   className="w-8 h-8 rounded"
                 />
               ) : (
