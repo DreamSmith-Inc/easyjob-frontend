@@ -24,6 +24,20 @@ export interface JobPosting {
   description: string;
 }
 
+export interface StudentJobPosting {
+  business_id: string;
+  business_name: string;
+  date_posted: string;
+  description: string;
+  id: number;
+  is_active: boolean;
+  location: string;
+  requirements: string;
+  salary: string;
+  timing: string;
+  title: string;
+}
+
 export interface PaginatedResponse<T> {
   count: number;
   next: string | null;
